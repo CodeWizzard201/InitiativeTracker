@@ -1,8 +1,9 @@
 # Initiative Tracker
-# Version 0.2
+# Version 0.3
 # 
 # Newly Added:
-# -GUI
+# -Ability to Edit
+# -Ability to Delete
 #
 # By: Gabe Williams
 
@@ -38,13 +39,19 @@ def display_list(updated_list):
     window['-MSG-'].update(msg)
 
 def update_list(index, name, roll):
-    # Find the index of the edited row
+    # Find the index of the edited row and delete it from the list
+    delete_entry(index)
 
     # Update the row with a new entry
+    initiative_list.append(Combatant(name,int(roll)))
+    initiative_list.sort(key=lambda x: x.roll, reverse=True)
 
     # Send a message saying that the row has been updated
     msg = "Entry has been updated successfully!"
     window['-MSG-'].update(msg)
+
+def delete_entry(index):
+    initiative_list.pop(index)
 
 
 # Create the initiative list
@@ -105,21 +112,29 @@ while True:
         roll_value = values["-ROLL-"]
         initiative_list = initiative_creator(name_value, roll_value, initiative_list)
         display_list(initiative_list)
+    elif event == "-EDIT-":
+        #Catch errors if there is no selection
+        try:
+            edited_name = sg.popup_get_text("Enter the Modified Name:", title="Edit Entry")
+            edited_roll = sg.popup_get_text("Enter the Modified Roll:", title="Edit Entry")
+            update_list(index, edited_name, edited_roll)
+        except NameError:
+            msg = "There is no selection!"
+            window["-MSG-"].update(msg)
+        display_list(initiative_list)
+    elif event == "-DELETE-":
+        #Catch errors if there is no selection
+        try:
+            delete_entry(index)
+        except NameError:
+            msg = "There is no selection!"
+            window["-MSG-"].update(msg)
+        display_list(initiative_list)
     elif event == "-DISPLAY LIST-":
         selection = values[event]
         if selection:
             item = selection[0]
             index = window['-DISPLAY LIST-'].get_indexes()[0]
-            print(index)
-            #Put the selection's name and roll in the text fields
-            #Figure out a way to allow for edits (Maybe check for an index?)
-
         
 #Close after loop is done
 window.close()
-
-
-
-
-
- 
