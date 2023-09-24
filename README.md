@@ -1,5 +1,6 @@
 # InitiativeTracker
-Personal Project for working on an Initiative Tracker for TTRPGs like D&amp;D. Uses Python.
+Personal Project for working on an Initiative Tracker for TTRPGs like D&amp;D. Uses Python.  
+An initiative tracker allows game masters (GMs) to manage the rolled initiative stat within the combat game state.
 
 Basic Features include:  
 -Add combatants to the list.  
