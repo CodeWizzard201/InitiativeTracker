@@ -2,15 +2,15 @@
 # Version 0.3
 # 
 # Newly Added:
-# -Ability to Edit
+# -Ability to Save
 # -Ability to Delete
 #
 # By: Gabe Williams
 
 # This class sets up the combatant object. 
 # This object holds the name and the roll of the combatant.
-from symbol import argument
 import PySimpleGUI as sg
+import os
 
 class Combatant:
     def __init__(self, name, roll):
@@ -20,11 +20,7 @@ class Combatant:
         return f"{self.name} ({self.roll})"
     def __repr__(self):
         return repr((self.name, self.roll))
-    
-#Menu Options:
-#1. Create a new List - starting from an empty list
-#2. Edit the current List - do the same process but with a current list
-#3. Quit the application - type quit and it prints and ends the program
+#Functions    
 def initiative_creator(name, roll, initiative_order):
     # Take that input (Name and Initiative Roll) and put it into a list
     initiative_order.append(Combatant(name, int(roll)))
@@ -51,11 +47,61 @@ def update_list(index, name, roll):
     window['-MSG-'].update(msg)
 
 def delete_entry(index):
-    initiative_list.pop(index)
+    if initiative_list:
+        initiative_list.pop(index)
+
+def clear_list():
+    initiative_list.clear()
+
+def save_list():
+    msg = "Saving List..."
+    window['-MSG-'].update(msg)
+    file = sg.filedialog.asksaveasfile(defaultextension='.txt', filetypes=[
+        ("Text file", '.txt'),
+        ("CSV file", '.csv'),
+        ("All files", '.*')
+    ])
+    [file.write("%s\n" % item) for item in initiative_list]
+    
+    file.close()
+    msg = "List Saved!"
+    window['-MSG-'].update(msg)
+
+def load_list():
+    msg = "Loading List..."
+    window['-MSG-'].update(msg)
+    # Allows user to select a file to load a preset list from
+    file = sg.filedialog.askopenfile(mode = 'r', filetypes =[
+        ("Text file", '.txt'),
+        ("CSV file", '.csv'),
+        ("All files", '.*')
+    ])
+    #If the file has content, unpack it into a list to send back to the initiative_list
+    if file:
+        #Clear Initiative list
+        clear_list()
+        temp_list = []
+        for line in file:
+            content = line.strip()
+            loadedList = content.split('\n')
+            #Take each element and split 'Name, (Roll)' into 'Name' and '(Roll)'
+            for element in loadedList:
+                splitData = element.split(' ')
+                splitData[1] = splitData[1].replace("(","").replace(")","")
+                #Use the creator to recreate the new list of initiative rolls
+                temp_list = initiative_creator(splitData[0], int(splitData[1]), temp_list)
+                print(temp_list)
+
+        return temp_list
+    file.close()
+    msg = "List Loaded!"
+    window['-MSG-'].update(msg)
+    pass
 
 
 # Create the initiative list
 initiative_list = []
+working_directory = os.getcwd()
 
 # Creating both sides of the layout.
 # Input Side
@@ -82,8 +128,11 @@ display_column = [
         )
     ],
     [
+        sg.Button("Save", key="-SAVE-"),
+        sg.Button("Load", key="-LOAD-"),
         sg.Button("Edit", key="-EDIT-"),
-        sg.Button("Delete", key="-DELETE-") 
+        sg.Button("Delete", key="-DELETE-"),
+        sg.Button("Clear All", key="-CLEAR ALL-") 
     ],
 ]
 
@@ -96,21 +145,32 @@ layout = [
     ]
 ]
 
+
 #Main window
 window = sg.Window("Initiative Tracker", layout)
 
 #Event Loop
 while True:
-    event, values = window.read()
-     
+    event, values = window.read() 
     # End program if user closes window or
     # presses the OK button
     if event == sg.WIN_CLOSED:
+        #TODO ask if the user wants to save their list IF there is at least one entry
         break
+    #Adds new entry to list
     elif event == "Submit":
         name_value = values["-NAME-"]
         roll_value = values["-ROLL-"]
         initiative_list = initiative_creator(name_value, roll_value, initiative_list)
+        display_list(initiative_list)
+    #Saves to a file designated by user
+    elif event == "-SAVE-":
+        save_list()
+    #Loads from file overwriting the current list of entries
+    elif event == "-LOAD-":
+        # get the list from the file and overwrite the current list
+        # overwrite prompt if you want to save the current list first
+        initiative_list = load_list()
         display_list(initiative_list)
     elif event == "-EDIT-":
         #Catch errors if there is no selection
@@ -126,15 +186,20 @@ while True:
         #Catch errors if there is no selection
         try:
             delete_entry(index)
+            display_list(initiative_list)
         except NameError:
             msg = "There is no selection!"
             window["-MSG-"].update(msg)
-        display_list(initiative_list)
     elif event == "-DISPLAY LIST-":
         selection = values[event]
         if selection:
             item = selection[0]
             index = window['-DISPLAY LIST-'].get_indexes()[0]
+    elif event == "-CLEAR ALL-":
+        confirmation = sg.popup_yes_no("Are you sure you want to clear the list?", title="Clear All")
+        if confirmation:
+            clear_list()
+            display_list(initiative_list)
         
 #Close after loop is done
 window.close()
