@@ -6,11 +6,11 @@ Basic Features include:
 -Add combatants to the list.  
 -Edit combatants to the list.  
 -Remove combatants from the list.
--Save a list of combatants as a .txt file.
--Load a list of combatants from a .txt file.
--Clear the entire list with a single button.
+<br>-Save a list of combatants as a .txt file.
+<br>-Load a list of combatants from a .txt file.
+<br>-Clear the entire list with a single button.
 
 The next features to add are:  
--Toggling the descending and ascending order of the sort (for games that use descending order).
--Improving the UI to be more presentable.
+<br>-Toggling the descending and ascending order of the sort (for games that use descending order).
+<br>-Improving the UI to be more presentable.
 
