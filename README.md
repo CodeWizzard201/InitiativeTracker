@@ -5,9 +5,12 @@ An initiative tracker allows game masters (GMs) to manage the rolled initiative 
 Basic Features include:  
 -Add combatants to the list.  
 -Edit combatants to the list.  
--Remove combatants from the list.  
+-Remove combatants from the list.
+-Save a list of combatants as a .txt file.
+-Load a list of combatants from a .txt file.
+-Clear the entire list with a single button.
 
 The next features to add are:  
--A "clear all" button.  
--Allow for the ability to save lists for future use.  
+-Toggling the descending and ascending order of the sort (for games that use descending order).
+-Improving the UI to be more presentable.
 
