@@ -10,7 +10,6 @@ Basic Features include:
 <br>-Load a list of combatants from a .txt file.
 <br>-Clear the entire list with a single button.
 
-The next features to add are:  
-<br>-Toggling the descending and ascending order of the sort (for games that use descending order).
+The next features to add are:  <br>-Toggling the descending and ascending order of the sort (for games that use descending order).
 <br>-Improving the UI to be more presentable.
 
